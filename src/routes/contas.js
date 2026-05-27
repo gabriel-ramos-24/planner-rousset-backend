@@ -10,14 +10,16 @@ export default async function routeContas(request, env, subPath) {
             return Response.json(result.body, { status: result.status });
 
         }
-        /*
+
+        // Criar uma conta
         if (request.method === "POST") {
-            const userData = await request.json();
-            const result = await contasService.createUser(userData, env);
+            const contaData = await request.json();
+            const result = await contasService.createConta(env, contaData);
             return Response.json(result.body, { status: result.status });
 
         }
 
+        /*
         if (request.method === "PATCH") { }
         if (request.method === "DELETE") { }
         */
