@@ -3,9 +3,19 @@ import * as database from '../db/database.js';
 export async function getTodasContas(env) {
     try {
 
-        const resultadoTodasContas = await database.buscarTodasContas(env);
-        if (resultadoTodasContas.status === 200) return { body: { dados: resultadoTodasContas.dados, mensagem: resultadoTodasContas.mensagem }, status: resultadoTodasContas.status };
-        return { body: { mensagem: resultadoTodasContas.mensagem }, status: resultadoTodasContas.status }
+        const resultado = await database.buscarTodasContas(env);
+        return {
+            body: resultado.status === 200
+                ? {
+                    dados: resultado.dados,
+                    mensagem: resultado.mensagem
+                }
+                : {
+                    mensagem: resultado.mensagem
+                },
+
+            status: resultado.status
+        };
 
     } catch (error) {
 

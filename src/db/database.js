@@ -1,7 +1,7 @@
 export async function buscarTodasContas(env) {
     try {
 
-        const contas = await env.DB.prepare("SELECT * FROM contas").all;
+        const contas = await env.DB.prepare("SELECT * FROM contas").all();
         return { dados: contas.results, mensagem: "Consulta realizada com sucesso!", status: 200 };
 
     } catch (error) {
