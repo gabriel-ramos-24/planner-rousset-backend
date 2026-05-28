@@ -1,4 +1,4 @@
-import * as database from '../db/database.js';
+import * as database from '../db/dbcontas.js';
 
 export async function getTodasContas(env) {
     try {

@@ -1,7 +1,7 @@
 import routeContas from './routes/contas.js';
 //import routeRelatorios from './routes/relatorios.js';
 //import routeProdutos from './routes/produtos.js';
-//import routeFornecedores from './routes/fornecedores.js';
+import routeFornecedores from './routes/fornecedores.js';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,16 +13,13 @@ const routes = [
   { prefix: "/contas", handler: routeContas },
   // { prefix: "/relatorios", handler: routeRelatorios },
   // { prefix: "/produtos", handler: routeProdutos },
-  // { prefix: "/fornecedores", handler: routeFornecedores },
+  { prefix: "/fornecedores", handler: routeFornecedores },
 ];
 
 export default {
 
   async fetch(request, env) {
 
-    // =========================
-    // CORS PRE-FLIGHT
-    // =========================
     if (request.method === "OPTIONS") {
 
       return new Response(null, {
@@ -51,9 +48,6 @@ export default {
             subPath
           );
 
-        // =========================
-        // INJETAR HEADERS CORS
-        // =========================
         Object.entries(corsHeaders)
           .forEach(([key, value]) => {
             response.headers.set(key, value);

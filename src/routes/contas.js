@@ -35,9 +35,9 @@ export default async function routeContas(request, env, subPath) {
 
         }
 
-        return Response.json({ mensagem: "Rota inexistente" }, { status: 404 });
+        return Response.json({ mensagem: "Rota inexistente." }, { status: 404 });
     } catch (error) {
         console.log(error);
-        return Response.json({ mensagem: "Erro interno" }, { status: 500 });
+        return Response.json({ mensagem: "Erro interno." }, { status: 500 });
     }
 }
