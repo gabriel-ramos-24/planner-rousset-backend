@@ -1,7 +1,7 @@
 export async function buscarTodosContratos(env) {
     try {
 
-        const contratos = await env.DB.prepare("SELECT * FROM contratos INNER JOIN fornecedores ON fornecedores.id = contratos.fornecedor_id INNER JOIN contas ON contas.id = contratos.conta_id").all();
+        const contratos = await env.DB.prepare("SELECT c.id, f.nome AS fornecedor, ct.conta AS conta, c.nome AS nome_contrato, c.valor_contratado FROM contratos c INNER JOIN fornecedores f ON f.id = c.fornecedor_id INNER JOIN contas ct ON ct.id = c.conta_id").all();
         return { dados: contratos.results, mensagem: "Consulta realizada com sucesso!", status: 200 };
 
     } catch (error) {
