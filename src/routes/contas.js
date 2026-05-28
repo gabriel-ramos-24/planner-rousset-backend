@@ -19,10 +19,22 @@ export default async function routeContas(request, env, subPath) {
 
         }
 
-        /*
-        if (request.method === "PATCH") { }
-        if (request.method === "DELETE") { }
-        */
+        // Atualizar uma conta
+        if (request.method === "PUT") {
+            const contaData = await request.json();
+            const result = await contasService.updateConta(env, contaData);
+            return Response.json(result.body, { status: result.status });
+
+        }
+
+        // Deletar uma conta
+        if (request.method === "DELETE") {
+            const contaId = await request.json();
+            const result = await contasService.deleteConta(env, contaId);
+            return Response.json(result.body, { status: result.status });
+
+        }
+
         return Response.json({ mensagem: "Rota inexistente" }, { status: 404 });
     } catch (error) {
         console.log(error);

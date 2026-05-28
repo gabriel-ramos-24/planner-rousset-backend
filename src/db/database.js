@@ -13,11 +13,40 @@ export async function buscarTodasContas(env) {
 export async function criarConta(env, contaData) {
     try {
 
-        const contas = await env.DB.prepare("INSERT INTO contas (apelido, conta) VALUES (?, ?)").bind(contaData.apelido, contaData.conta).run();
-        return { dados: contas.results, mensagem: "Conta criada com sucesso!", status: 200 };
+        await env.DB.prepare("INSERT INTO contas (apelido, conta) VALUES (?, ?)").bind(contaData.apelido, contaData.conta).run();
+        return { mensagem: "Conta criada com sucesso!", status: 201 };
 
     } catch (error) {
         console.error("Log de erro dentro da pasta database ao criar uma conta: ", error);
         return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao criar uma conta.", status: 500 };
+    }
+}
+
+export async function atualizarConta(env, contaData) {
+    try {
+
+        const result = await env.DB.prepare("UPDATE contas SET apelido = ?, conta = ? WHERE id = ?").bind(contaData.apelido, contaData.conta, contaData.id).run();
+
+        if (result.meta.changes === 0) {
+            return { mensagem: "Nenhuma conta encontrada para atualizar.", status: 404 };
+        }
+
+        return { mensagem: "Conta atualizada com sucesso!", status: 200 };
+
+    } catch (error) {
+        console.error("Log de erro dentro da pasta database ao atualizar uma conta: ", error);
+        return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao atualizar uma conta.", status: 500 };
+    }
+}
+
+export async function deletarConta(env, contaId) {
+    try {
+
+        await env.DB.prepare("DELETE FROM contas WHERE id = ?").bind(contaId.id).run();
+        return { mensagem: "Conta excluída com sucesso!", status: 200 };
+
+    } catch (error) {
+        console.error("Log de erro dentro da pasta database ao excluir uma conta: ", error);
+        return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao excluir uma conta.", status: 500 };
     }
 }
