@@ -4,9 +4,9 @@ export default async function routeContratos(request, env, subPath) {
 
     try {
 
-        // Retorna todas os contratros cadastrados
+        // Retorna todas os contratos cadastrados
         if (request.method === "GET") {
-            const result = await contratosServices.getTodosContratros(env);
+            const result = await contratosServices.getTodosContratos(env);
             return Response.json(result.body, { status: result.status });
 
         }
