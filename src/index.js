@@ -1,6 +1,5 @@
 import routeContas from './routes/contas.js';
-//import routeRelatorios from './routes/relatorios.js';
-//import routeProdutos from './routes/produtos.js';
+import routeProdutos from './routes/produtos.js';
 import routeFornecedores from './routes/fornecedores.js';
 import routeContratos from './routes/contratos.js';
 
@@ -12,8 +11,7 @@ const corsHeaders = {
 
 const routes = [
   { prefix: "/contas", handler: routeContas },
-  // { prefix: "/relatorios", handler: routeRelatorios },
-  // { prefix: "/produtos", handler: routeProdutos },
+  { prefix: "/produtos", handler: routeProdutos },
   { prefix: "/fornecedores", handler: routeFornecedores },
   { prefix: "/contratos", handler: routeContratos },
 ];
