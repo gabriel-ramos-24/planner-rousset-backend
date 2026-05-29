@@ -21,7 +21,7 @@ function validarProduto(produtoData) {
     // Sanitização e padronização
     const contratoId = produtoData.contratoId
         ?.toString()
-        .replace(/\D/g, '');
+        .replace(/\D/g, '').toUpperCase();
 
     const nome = produtoData.nome
         ?.trim()

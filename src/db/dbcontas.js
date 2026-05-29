@@ -13,7 +13,7 @@ export async function buscarTodasContas(env) {
 export async function criarConta(env, contaData) {
     try {
 
-        await env.DB.prepare("INSERT INTO contas (apelido, conta) VALUES (?, ?)").bind(contaData.apelido, contaData.conta).run();
+        await env.DB.prepare("INSERT INTO contas (apelido, conta) VALUES (?, ?)").bind(contaData.apelido.toUpperCase(), contaData.conta).run();
         return { mensagem: "Conta criada com sucesso!", status: 201 };
 
     } catch (error) {

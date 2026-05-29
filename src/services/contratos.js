@@ -8,7 +8,7 @@ function validarContrato(contratoData) {
     }
 
     // Formatação padrão
-    const nome = contratoData.nome?.trim();
+    const nome = contratoData.nome?.trim().toUpperCase();
 
     const fornecedorId = contratoData.fornecedorId?.trim();
 
