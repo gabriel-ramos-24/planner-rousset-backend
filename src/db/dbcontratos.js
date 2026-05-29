@@ -25,7 +25,7 @@ export async function criarContrato(env, contratoData) {
 export async function atualizarContrato(env, contratoData) {
     try {
 
-        const result = await env.DB.prepare("UPDATE contratos SET nome = ?, cnpj = ?, email = ?, celular = ? WHERE id = ?").bind(contratoData.fornecedor_id, contratoData.conta_id, contratoData.nome, contratoData.valor_contratado, contratoData.id).run();
+        const result = await env.DB.prepare("UPDATE contratos SET fornecedor_id = ?, conta_id = ?, nome = ?, valor_contratado = ? WHERE id = ?").bind(contratoData.fornecedor_id, contratoData.conta_id, contratoData.nome, contratoData.valor_contratado, contratoData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhum contrato encontrado para atualizar.", status: 404 };
