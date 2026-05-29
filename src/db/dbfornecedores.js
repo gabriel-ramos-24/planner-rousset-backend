@@ -42,8 +42,28 @@ export async function atualizarFornecedor(env, fornecedorData) {
 export async function deletarFornecedor(env, fornecedorId) {
     try {
 
+        const contratos = await env.DB
+            .prepare(`
+                SELECT id
+                FROM contratos
+                WHERE fornecedor_id = ?
+                LIMIT 1
+            `)
+            .bind(fornecedorId.id)
+            .first();
+
+        if (contratos) {
+            return {
+                mensagem: "Fornecedor possui contratos vinculados.",
+                status: 400
+            };
+        }
+
         const result = await env.DB
-            .prepare("DELETE FROM fornecedores WHERE id = ?")
+            .prepare(`
+                DELETE FROM fornecedores
+                WHERE id = ?
+            `)
             .bind(fornecedorId.id)
             .run();
 
@@ -54,8 +74,21 @@ export async function deletarFornecedor(env, fornecedorId) {
             };
         }
 
+        return {
+            mensagem: "Fornecedor excluído com sucesso!",
+            status: 200
+        };
+
     } catch (error) {
-        console.error("Log de erro dentro da pasta database ao excluir um fornecedor: ", error);
-        return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao excluir um fornecedor.", status: 500 };
+
+        console.error(
+            "Log de erro dentro da pasta database ao excluir fornecedor:",
+            error
+        );
+
+        return {
+            mensagem: "Erro ao excluir fornecedor.",
+            status: 500
+        };
     }
 }
