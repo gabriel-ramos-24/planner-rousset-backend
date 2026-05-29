@@ -7,20 +7,33 @@ function validarContrato(contratoData) {
         return "Dados do contrato não enviados.";
     }
 
-    // Formatação Padrão
+    // Formatação padrão
     const nome = contratoData.nome?.trim();
+
     const fornecedorId = contratoData.fornecedorId?.trim();
-    const contaId = contratoData.contaId?.replace(/\D/g, '');
+
+    const contaId = contratoData.contaId
+        ?.replace(/\D/g, '');
+
     const valorContratado = Number(
         contratoData.valorContratado
             ?.replace(/\./g, '')
             .replace(',', '.')
-            .replace(/[^\d.]/g, '')
+            .replace(/[^\d.-]/g, '')
     );
 
     // Campos obrigatórios
-    if (!nome || !fornecedorId || !contaId || !valorContratado) {
+    if (!nome || !fornecedorId || !contaId) {
         return "Todos os campos são obrigatórios.";
+    }
+
+    // Valor contratado
+    if (isNaN(valorContratado)) {
+        return "Valor contratado inválido.";
+    }
+
+    if (valorContratado <= 0) {
+        return "O valor contratado deve ser maior que zero.";
     }
 
     // Nome

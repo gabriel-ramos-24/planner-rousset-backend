@@ -13,7 +13,7 @@ export async function buscarTodosContratos(env) {
 export async function criarContrato(env, contratoData) {
     try {
 
-        await env.DB.prepare("INSERT INTO contratos (fornecedor_id, conta_id, nome, valor_contratado) VALUES (?, ?, ?, ?)").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valor_contratado).run();
+        await env.DB.prepare("INSERT INTO contratos (fornecedor_id, conta_id, nome, valor_contratado) VALUES (?, ?, ?, ?)").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valorContratado).run();
         return { mensagem: "Contrato criado com sucesso!", status: 201 };
 
     } catch (error) {
@@ -25,7 +25,7 @@ export async function criarContrato(env, contratoData) {
 export async function atualizarContrato(env, contratoData) {
     try {
 
-        const result = await env.DB.prepare("UPDATE contratos SET fornecedor_id = ?, conta_id = ?, nome = ?, valor_contratado = ? WHERE id = ?").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valor_contratado, contratoData.id).run();
+        const result = await env.DB.prepare("UPDATE contratos SET fornecedor_id = ?, conta_id = ?, nome = ?, valor_contratado = ? WHERE id = ?").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valorContratado, contratoData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhum contrato encontrado para atualizar.", status: 404 };
@@ -54,8 +54,21 @@ export async function deletarContrato(env, contratoId) {
             };
         }
 
+        return {
+            mensagem: "Contrato excluído com sucesso!",
+            status: 200
+        };
+
     } catch (error) {
-        console.error("Log de erro dentro da pasta database ao excluir um contrato: ", error);
-        return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao excluir um contrato.", status: 500 };
+
+        console.error(
+            "Log de erro dentro da pasta database ao excluir um contrato:",
+            error
+        );
+
+        return {
+            mensagem: "Erro ao excluir contrato.",
+            status: 500
+        };
     }
 }
