@@ -6,7 +6,9 @@ export default async function routeProdutos(request, env, subPath) {
 
         // Retorna todas os produtos cadastrados
         if (request.method === "GET") {
-            const result = await produtosService.getTodosProdutos(env);
+            const url = new URL(request.url);
+            const orderBy = url.searchParams.get("orderby");
+            const result = await produtosService.getTodosProdutos(env, orderBy);
             return Response.json(result.body, { status: result.status });
 
         }

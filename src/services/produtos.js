@@ -128,12 +128,12 @@ function validarProduto(produtoData) {
     };
 }
 
-export async function getTodosProdutos(env, tipoOrdenacao) {
+export async function getTodosProdutos(env, orderBy) {
     try {
 
         const resultado = await database.buscarTodosProdutos(
             env,
-            tipoOrdenacao
+            orderBy
         );
 
         return {
