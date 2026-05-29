@@ -1,7 +1,7 @@
-export async function buscarTodosProdutos(env, ordernarProduto) {
+export async function buscarTodosProdutos(env, ordernar) {
     try {
 
-        const orderBy = ordernarProduto
+        const orderBy = ordernar === "produto"
             ? "p.nome ASC, f.nome ASC"
             : "f.nome ASC, p.nome ASC";
 
