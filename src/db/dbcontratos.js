@@ -13,7 +13,7 @@ export async function buscarTodosContratos(env) {
 export async function criarContrato(env, contratoData) {
     try {
 
-        await env.DB.prepare("INSERT INTO contratos (fornecedor_id, conta_id, nome, valor_contratado) VALUES (?, ?, ?, ?)").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valorContratado).run();
+        await env.DB.prepare("INSERT INTO contratos (fornecedor_id, conta_id, nome, valor_contratado) VALUES (?, ?, ?, ?)").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome.toUpperCase(), contratoData.valorContratado).run();
         return { mensagem: "Contrato criado com sucesso!", status: 201 };
 
     } catch (error) {
@@ -25,7 +25,7 @@ export async function criarContrato(env, contratoData) {
 export async function atualizarContrato(env, contratoData) {
     try {
 
-        const result = await env.DB.prepare("UPDATE contratos SET fornecedor_id = ?, conta_id = ?, nome = ?, valor_contratado = ? WHERE id = ?").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome, contratoData.valorContratado, contratoData.id).run();
+        const result = await env.DB.prepare("UPDATE contratos SET fornecedor_id = ?, conta_id = ?, nome = ?, valor_contratado = ? WHERE id = ?").bind(contratoData.fornecedorId, contratoData.contaId, contratoData.nome.toUpperCase(), contratoData.valorContratado, contratoData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhum contrato encontrado para atualizar.", status: 404 };

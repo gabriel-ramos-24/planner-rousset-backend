@@ -13,7 +13,7 @@ export async function buscarTodosFornecedores(env) {
 export async function criarFornecedor(env, fornecedorData) {
     try {
 
-        await env.DB.prepare("INSERT INTO fornecedores (nome, cnpj, email, celular) VALUES (?, ?, ?, ?)").bind(fornecedorData.nome, fornecedorData.cnpj, fornecedorData.email, fornecedorData.celular).run();
+        await env.DB.prepare("INSERT INTO fornecedores (nome, cnpj, email, celular) VALUES (?, ?, ?, ?)").bind(fornecedorData.nome.toUpperCase(), fornecedorData.cnpj, fornecedorData.email, fornecedorData.celular).run();
         return { mensagem: "Fornecedor criado com sucesso!", status: 201 };
 
     } catch (error) {
@@ -25,7 +25,7 @@ export async function criarFornecedor(env, fornecedorData) {
 export async function atualizarFornecedor(env, fornecedorData) {
     try {
 
-        const result = await env.DB.prepare("UPDATE fornecedores SET nome = ?, cnpj = ?, email = ?, celular = ? WHERE id = ?").bind(fornecedorData.nome, fornecedorData.cnpj, fornecedorData.email, fornecedorData.celular, fornecedorData.id).run();
+        const result = await env.DB.prepare("UPDATE fornecedores SET nome = ?, cnpj = ?, email = ?, celular = ? WHERE id = ?").bind(fornecedorData.nome.toUpperCase(), fornecedorData.cnpj, fornecedorData.email, fornecedorData.celular, fornecedorData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhum fornecedor encontrado para atualizar.", status: 404 };

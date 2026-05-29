@@ -25,7 +25,7 @@ export async function criarConta(env, contaData) {
 export async function atualizarConta(env, contaData) {
     try {
 
-        const result = await env.DB.prepare("UPDATE contas SET apelido = ?, conta = ? WHERE id = ?").bind(contaData.apelido, contaData.conta, contaData.id).run();
+        const result = await env.DB.prepare("UPDATE contas SET apelido = ?, conta = ? WHERE id = ?").bind(contaData.apelido.toUpperCase(), contaData.conta, contaData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhuma conta encontrada para atualizar.", status: 404 };

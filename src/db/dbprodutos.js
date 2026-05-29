@@ -56,7 +56,7 @@ export async function criarProduto(env, produtoData) {
             };
         }
 
-        await env.DB.prepare("INSERT INTO produtos (contrato_id, nome, unidade, quantidade_contrato, valor_unitario) VALUES (?, ?, ?, ?, ?)").bind(produtoData.contratoId, produtoData.nome, produtoData.unidade, produtoData.quantidadeContrato, produtoData.valorUnitario).run();
+        await env.DB.prepare("INSERT INTO produtos (contrato_id, nome, unidade, quantidade_contrato, valor_unitario) VALUES (?, ?, ?, ?, ?)").bind(produtoData.contratoId, produtoData.nome.toUpperCase(), produtoData.unidade, produtoData.quantidadeContrato, produtoData.valorUnitario).run();
         return { mensagem: "Produto criado com sucesso!", status: 201 };
 
     } catch (error) {
@@ -81,7 +81,7 @@ export async function atualizarProduto(env, produtoData) {
             };
         }
 
-        const result = await env.DB.prepare("UPDATE produtos SET contrato_id = ?, nome = ?, unidade = ?, quantidade_contrato = ?, valor_unitario = ? WHERE id = ?").bind(produtoData.contratoId, produtoData.nome, produtoData.unidade, produtoData.quantidadeContrato, produtoData.valorUnitario, produtoData.id).run();
+        const result = await env.DB.prepare("UPDATE produtos SET contrato_id = ?, nome = ?, unidade = ?, quantidade_contrato = ?, valor_unitario = ? WHERE id = ?").bind(produtoData.contratoId, produtoData.nome.toUpperCase(), produtoData.unidade, produtoData.quantidadeContrato, produtoData.valorUnitario, produtoData.id).run();
 
         if (result.meta.changes === 0) {
             return { mensagem: "Nenhum produto encontrado para atualizar.", status: 404 };
