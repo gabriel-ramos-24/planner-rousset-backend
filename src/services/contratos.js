@@ -76,8 +76,6 @@ export async function getTodosContratos(env) {
 export async function createContrato(env, contratoData) {
     try {   
 
-        console.log(contratoData);
-
         const erro = validarContrato(contratoData);
 
         if (erro) {
@@ -86,8 +84,6 @@ export async function createContrato(env, contratoData) {
                 status: 400
             };
         }
-
-        console.log(contratoData);
 
         const resultado = await database.criarContrato(env, contratoData);
         return { body: { mensagem: resultado.mensagem }, status: resultado.status };

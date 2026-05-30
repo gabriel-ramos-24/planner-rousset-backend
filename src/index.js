@@ -2,6 +2,7 @@ import routeContas from './routes/contas.js';
 import routeProdutos from './routes/produtos.js';
 import routeFornecedores from './routes/fornecedores.js';
 import routeContratos from './routes/contratos.js';
+import routeLancamentos from './routes/lancamentos.js';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,6 +15,7 @@ const routes = [
   { prefix: "/produtos", handler: routeProdutos },
   { prefix: "/fornecedores", handler: routeFornecedores },
   { prefix: "/contratos", handler: routeContratos },
+  { prefix: "/lancamentos", handler: routeLancamentos },
 ];
 
 export default {
