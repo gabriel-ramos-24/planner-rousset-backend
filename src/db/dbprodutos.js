@@ -33,6 +33,52 @@ export async function buscarTodosProdutos(env, ordernar) {
     }
 }
 
+export async function getValorRestanteContrato(env, contratoId, produtoId = null) {
+    try {
+        let resultado;
+
+        if (produtoId) {
+            // UPDATE: Desconsidera o produto atual na soma para não bloquear a própria edição
+            resultado = await env.DB.prepare(`
+                SELECT
+                    c.valor_contratado -
+                    COALESCE(SUM(p.quantidade_contrato * p.valor_unitario), 0) AS resultado
+                FROM contratos c
+                LEFT JOIN produtos p
+                    ON p.contrato_id = c.id
+                    AND p.id <> ?
+                WHERE c.id = ?
+                GROUP BY c.id
+            `)
+            .bind(produtoId, contratoId)
+            .first();
+        } else {
+            // CREATE: Soma todos os produtos atrelados a este contrato
+            resultado = await env.DB.prepare(`
+                SELECT
+                    c.valor_contratado -
+                    COALESCE(SUM(p.quantidade_contrato * p.valor_unitario), 0) AS resultado
+                FROM contratos c
+                LEFT JOIN produtos p
+                    ON p.contrato_id = c.id
+                WHERE c.id = ?
+                GROUP BY c.id
+            `)
+            .bind(contratoId)
+            .first();
+        }
+
+        return resultado?.resultado ?? null;
+
+    } catch (error) {
+        console.error(
+            "Log de erro dentro da pasta database ao buscar o valor restante do contrato:",
+            error
+        );
+        throw error;
+    }
+}
+
 export async function criarProduto(env, produtoData) {
     try {
 

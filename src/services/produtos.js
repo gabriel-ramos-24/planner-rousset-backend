@@ -9,7 +9,7 @@ const UNIDADES_VALIDAS = [
     'MOLHO'
 ];
 
-function validarProduto(produtoData) {
+async function validarProduto(env, produtoData) {
 
     // Verifica existência do objeto
     if (!produtoData) {
@@ -55,13 +55,6 @@ function validarProduto(produtoData) {
     ) {
         return {
             erro: "Todos os campos são obrigatórios."
-        };
-    }
-
-    // Contrato
-    if (!/^\d+$/.test(contratoId)) {
-        return {
-            erro: "Contrato inválido."
         };
     }
 
@@ -111,21 +104,58 @@ function validarProduto(produtoData) {
         };
     }
 
+    // Contrato
+    if (!/^\d+$/.test(contratoId)) {
+        return {
+            erro: "Contrato inválido."
+        };
+    }
+
+    let valorRestanteContrato;
+
+    if (produtoData.id != null) {
+        // UPDATE
+        valorRestanteContrato = await database.getValorRestanteContrato(
+            env,
+            contratoId,
+            produtoData.id
+        );
+    } else {
+        // CREATE
+        valorRestanteContrato = await database.getValorRestanteContrato(
+            env,
+            contratoId
+        );
+    }
+
+    // Tratativa caso o contrato não seja encontrado
+    if (valorRestanteContrato === null) {
+        return {
+            erro: "Contrato não encontrado ou sem valor total definido."
+        };
+    }
+
+    // Calcula o custo total do produto atual que está sendo criado/editado
+    const custoProduto = quantidadeContrato * valorUnitario;
+
+    // Impede a ação se o custo do produto for maior que o saldo restante
+    if (custoProduto > valorRestanteContrato) {
+        return {
+            erro: "O produto informado ultrapassa o orçamento disponível no contrato."
+        };
+    }
+
     return {
         dados: {
             ...produtoData,
-
             contratoId: Number(contratoId),
-
             nome,
-
             unidade,
-
             quantidadeContrato,
-
             valorUnitario
         }
     };
+
 }
 
 export async function getTodosProdutos(env, orderBy) {
@@ -169,7 +199,7 @@ export async function getTodosProdutos(env, orderBy) {
 export async function createProduto(env, produtoData) {
     try {
 
-        const validacao = validarProduto(produtoData);
+        const validacao = await validarProduto(env, produtoData);
 
         if (validacao.erro) {
             return {
@@ -247,7 +277,7 @@ export async function updateProduto(env, produtoData) {
             };
         }
 
-        const validacao = validarProduto(produtoData);
+        const validacao = await validarProduto(env, produtoData);
 
         if (validacao.erro) {
             return {
