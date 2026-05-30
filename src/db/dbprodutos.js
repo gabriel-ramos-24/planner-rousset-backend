@@ -1,6 +1,5 @@
 export async function buscarTodosProdutos(env, ordernar) {
     try {
-
         const orderBy = ordernar === "produto"
             ? "p.nome ASC, f.nome ASC"
             : "f.nome ASC, p.nome ASC";
@@ -8,27 +7,21 @@ export async function buscarTodosProdutos(env, ordernar) {
         const produtos = await env.DB.prepare(`
             SELECT
                 p.id,
-
                 f.nome AS fornecedor,
-
                 c.nome AS contrato,
-
                 p.nome AS produto,
-
                 p.unidade,
-
                 p.quantidade_contrato AS quantidadeContrato,
-
-                p.valor_unitario AS valorUnitario
-
+                p.valor_unitario AS valorUnitario,
+                (p.quantidade_contrato - COALESCE(SUM(l.quantidade), 0)) AS estoque
             FROM produtos p
-
             INNER JOIN contratos c
                 ON c.id = p.contrato_id
-
             INNER JOIN fornecedores f
                 ON f.id = c.fornecedor_id
-
+            LEFT JOIN lancamentos l
+                ON l.produto_id = p.id
+            GROUP BY p.id
             ORDER BY ${orderBy}
         `).all();
 
