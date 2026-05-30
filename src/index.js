@@ -5,7 +5,7 @@ import routeContratos from './routes/contratos.js';
 import routeLancamentos from './routes/lancamentos.js';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://planner-rousset.pages.dev",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type"
 };
