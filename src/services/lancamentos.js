@@ -1,30 +1,70 @@
 import * as database from '../db/dblancamentos.js';
 
-async function validarLancamento(lancamentoData) {
+async function validarLancamento(env, lancamentoData) {
 
-    // Verifica existência do objeto
     if (!lancamentoData) {
         return "Dados do lançamento não enviados.";
     }
 
-    // Formatação padrão
     const dataIso = lancamentoData.data?.trim();
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dataIso)) return "Data deve estar no formato YYYY-MM-DD.";
 
-    const produtoId = Number(lancamentoData.produtoId);
-    if (!Number.isInteger(quantidade) || quantidade <= 0) return "Produto inválido.";
-
-    const quantidade = Number(lancamentoData.quantidade);
-    if (!Number.isInteger(quantidade) || quantidade <= 0) return "Quantidade inválida. Apenas números inteiros positivos.";
-
-    // Campos obrigatórios
-    if (!dataIso || !produtoId || !quantidade) {
-        return "Todos os campos são obrigatórios.";
+    if (!dataIso) {
+        return "Data é obrigatória.";
     }
 
-    const quantidadeDisponivel = await database.getQuantidadeProduto(lancamentoData.produtoId);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dataIso)) {
+        return "Data deve estar no formato YYYY-MM-DD.";
+    }
 
-    if (quantidadeDisponivel < quantidade) return "O produto informado não tem quantidade suficiente disponível no contrato.";
+    const dataObj = new Date(dataIso);
+
+    if (
+        Number.isNaN(dataObj.getTime()) ||
+        dataObj.toISOString().slice(0, 10) !== dataIso
+    ) {
+        return "Data inválida.";
+    }
+
+    const produtoId = Number(lancamentoData.produtoId);
+
+    if (!Number.isInteger(produtoId) || produtoId <= 0) {
+        return "Produto inválido.";
+    }
+
+    const quantidade = Number(lancamentoData.quantidade);
+
+    if (!Number.isInteger(quantidade) || quantidade <= 0) {
+        return "Quantidade inválida. Apenas números inteiros positivos.";
+    }
+
+    let quantidadeDisponivel;
+
+    if (lancamentoData.id != null) {
+
+        // UPDATE
+        quantidadeDisponivel = await database.getQuantidadeProduto(
+            env,
+            produtoId,
+            lancamentoData.id
+        );
+
+    } else {
+
+        // CREATE
+        quantidadeDisponivel = await database.getQuantidadeProduto(
+            env,
+            produtoId
+        );
+
+    }
+
+    if (quantidadeDisponivel === null) {
+        return "Produto não encontrado.";
+    }
+
+    if (quantidade > quantidadeDisponivel) {
+        return "O produto informado não tem quantidade suficiente disponível no contrato.";
+    }
 
     return null;
 }
@@ -57,7 +97,7 @@ export async function getTodosLancamentos(env, contratoId) {
 export async function createLancamento(env, lancamentoData) {
     try {
 
-        const erro = await validarLancamento(lancamentoData);
+        const erro = await validarLancamento(env, lancamentoData);
 
         if (erro) {
             return {
@@ -80,7 +120,7 @@ export async function createLancamento(env, lancamentoData) {
 export async function updateLancamento(env, lancamentoData) {
     try {
 
-        const erro = await validarLancamento(lancamentoData);
+        const erro = await validarLancamento(env, lancamentoData);
 
         if (erro) {
             return {

@@ -10,26 +10,68 @@ export async function buscarTodosLancamentos(env, contratoId) {
     }
 }
 
-export async function getQuantidadeProduto(env, produtoId) {
+export async function getQuantidadeProduto(
+    env,
+    produtoId,
+    lancamentoId = null
+) {
 
     try {
 
-        const quantidadeDisponivel = await env.DB.prepare("SELECT p.quantidade_contrato - COALESCE(SUM(l.quantidade), 0) AS resultado FROM produtos p LEFT JOIN lancamentos l ON l.produto_id = p.id WHERE p.id = ? GROUP BY p.id").bind(produtoId).first();
-        return quantidadeDisponivel.resultado;
+        let resultado;
+
+        if (lancamentoId) {
+
+            resultado = await env.DB.prepare(`
+                SELECT
+                    p.quantidade_contrato -
+                    COALESCE(SUM(l.quantidade), 0) AS resultado
+                FROM produtos p
+                LEFT JOIN lancamentos l
+                    ON l.produto_id = p.id
+                    AND l.id <> ?
+                WHERE p.id = ?
+                GROUP BY p.id
+            `)
+            .bind(lancamentoId, produtoId)
+            .first();
+
+        } else {
+
+            resultado = await env.DB.prepare(`
+                SELECT
+                    p.quantidade_contrato -
+                    COALESCE(SUM(l.quantidade), 0) AS resultado
+                FROM produtos p
+                LEFT JOIN lancamentos l
+                    ON l.produto_id = p.id
+                WHERE p.id = ?
+                GROUP BY p.id
+            `)
+            .bind(produtoId)
+            .first();
+
+        }
+
+        return resultado?.resultado ?? null;
 
     } catch (error) {
 
-        console.error("Log de erro dentro da pasta database ao buscar a quantidade do produto dísponível: ", error);
-        return { mensagem: "Conexão com banco de dados realizada. Porém, erro ao consultar a quantidade do produto dísponível.", status: 500 };
-    }
+        console.error(
+            "Log de erro dentro da pasta database ao buscar a quantidade do produto disponível:",
+            error
+        );
 
+        throw error;
+
+    }
 }
 
 
 export async function criarLancamento(env, lancamentoData) {
     try {
 
-        await env.DB.prepare("INSERT INTO lancamentos (data, produto_id, quantidade) VALUES (?, ?, ?").bind(lancamentoData.data, lancamentoData.produtoId, lancamentoData.quantidade).run();
+        await env.DB.prepare("INSERT INTO lancamentos (data, produto_id, quantidade) VALUES (?, ?, ?)").bind(lancamentoData.data, lancamentoData.produtoId, lancamentoData.quantidade).run();
         return { mensagem: "Lancamento criado com sucesso!", status: 201 };
 
     } catch (error) {
