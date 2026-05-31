@@ -27,15 +27,15 @@ export async function gerarTokenContrato(env, contratoId) {
         "iat": agoraUTC,
     };
 
-    const tokenGerado = await jwt.sign(payload, env.JWT_SECRET);
+    const tokenGerado = await jwt.sign(payload, env.JWT_PUBLIC);
 
     return { body: { token: tokenGerado, mensagem: "Token criado!" }, status: 500 };
 
 }
 
-export async function validarToken(env, token) {
+export async function validarToken(env, token, publico = false) {
 
-    const isValid = await jwt.verify(token, env.JWT_SECRET);
+    const isValid = (publico) ? await jwt.verify(token, env.JWT_PUBLIC) : await jwt.verify(token, env.JWT_SECRET);
 
     if (!isValid) return null;
 

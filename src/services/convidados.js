@@ -2,7 +2,9 @@ import { validarToken } from '../services/autenticacao';
 
 export async function getInfoConvidados(env, tokenConvidado) {
 
-    const payload = await validarToken(env, tokenConvidado);
+    const publico = true;
+
+    const payload = await validarToken(env, tokenConvidado, publico);
 
     if (!payload) return { body: { mensagem: "Token inválido!" }, status: 403 };
 
