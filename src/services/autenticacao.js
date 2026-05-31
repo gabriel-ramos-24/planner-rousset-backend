@@ -18,6 +18,21 @@ export async function gerarToken(env, senha) {
     return Response.json({ token: tokenGerado, mensagem: "Token entregue." }, { status: 200 });
 }
 
+export async function gerarTokenContrato(env, contratoId) {
+
+    const agoraUTC = Math.floor(Date.now() / 1000);
+
+    const payload = {
+        "contratoId": contratoId,
+        "iat": agoraUTC,
+    };
+
+    const tokenGerado = await jwt.sign(payload, env.JWT_SECRET);
+
+    return { body: { token: tokenGerado, mensagem: "Token criado!" }, status: 500 };
+
+}
+
 export async function validarToken(env, token) {
 
     const isValid = await jwt.verify(token, env.JWT_SECRET);

@@ -1,4 +1,5 @@
 import * as database from '../db/dbcontratos.js';
+import { gerarTokenContrato } from './autenticacao.js';
 
 function validarContrato(contratoData) {
 
@@ -48,6 +49,18 @@ function validarContrato(contratoData) {
     return null;
 }
 
+export async function getTokenContrato(env, contratoId) {
+
+    const id = Number(contratoId);
+
+    if (isNaN(id) || id <= 0) {
+        return { body: { mensagem: "Número do contrato inválido!" }, status: 400 };
+    }
+
+    const token = await gerarTokenContrato(env, id);
+    return token;
+}
+
 export async function getTodosContratos(env) {
     try {
 
@@ -74,7 +87,7 @@ export async function getTodosContratos(env) {
 }
 
 export async function createContrato(env, contratoData) {
-    try {   
+    try {
 
         const erro = validarContrato(contratoData);
 

@@ -4,6 +4,13 @@ export default async function routeContratos(request, env, subPath) {
 
     try {
 
+        if (subPath === "/compartilhar" && request.method === "GET") {
+            const url = new URL(request.url);
+            const contratoId = url.searchParams.get("contratoid");
+            const result = await contratosServices.getTokenContrato(env, contratoId);
+            return Response.json(result.body, { status: result.status });
+        }
+
         // Retorna todas os contratos cadastrados
         if (request.method === "GET") {
             const result = await contratosServices.getTodosContratos(env);

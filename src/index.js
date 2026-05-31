@@ -4,6 +4,7 @@ import routeFornecedores from './routes/fornecedores.js';
 import routeContratos from './routes/contratos.js';
 import routeLancamentos from './routes/lancamentos.js';
 import routeAutenticacao from './routes/autenticacao.js';
+import routeConvidados from './routes/convidados.js';
 import { validarToken } from './services/autenticacao.js';
 
 const corsHeaders = {
@@ -19,7 +20,7 @@ const routes = [
   { prefix: "/contratos", handler: routeContratos },
   { prefix: "/lancamentos", handler: routeLancamentos },
   { prefix: "/autenticacao", handler: routeAutenticacao },
-
+  { prefix: "/convidados", handler: routeConvidados },
 ];
 
 export default {
@@ -46,8 +47,8 @@ export default {
 
         const subPath = url.pathname.slice(route.prefix.length) || "/";
 
-        // Se não estiver pedindo a rota autenticacao, cobra o token!!!
-        if (route.prefix !== "/autenticacao") {
+        // Se não estiver pedindo a rota autenticacao ou convidados, cobra o token!!!
+        if (route.prefix !== "/autenticacao" || route.prefix !== "/convidados") {
 
           const authorization =
             request.headers.get("Authorization");
