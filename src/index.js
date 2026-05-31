@@ -7,7 +7,7 @@ import routeAutenticacao from './routes/autenticacao.js';
 import { validarToken } from './services/autenticacao.js';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://planner-rousset.pages.dev",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type"
 };
