@@ -3,6 +3,8 @@ import routeProdutos from './routes/produtos.js';
 import routeFornecedores from './routes/fornecedores.js';
 import routeContratos from './routes/contratos.js';
 import routeLancamentos from './routes/lancamentos.js';
+import routeAutenticacao from './routes/autenticacao.js';
+import { validarToken } from './services/autenticacao.js';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "https://planner-rousset.pages.dev",
@@ -16,6 +18,8 @@ const routes = [
   { prefix: "/fornecedores", handler: routeFornecedores },
   { prefix: "/contratos", handler: routeContratos },
   { prefix: "/lancamentos", handler: routeLancamentos },
+  { prefix: "/autenticacao", handler: routeAutenticacao },
+
 ];
 
 export default {
@@ -40,9 +44,45 @@ export default {
         url.pathname.startsWith(route.prefix + "/")
       ) {
 
-        const subPath =
-          url.pathname.slice(route.prefix.length) || "/";
+        const subPath = url.pathname.slice(route.prefix.length) || "/";
 
+        // Se não estiver pedindo a rota autenticacao, cobra o token!!!
+        if (route.prefix !== "/autenticacao") {
+
+          const authorization =
+            request.headers.get("Authorization");
+
+          if (!authorization?.startsWith("Bearer ")) {
+            return Response.json(
+              {
+                mensagem: "Token não informado"
+              },
+              {
+                status: 401
+              }
+            );
+          }
+
+          const token = authorization.substring(7);
+
+          const autorizado =
+            await validarToken(env, token);
+
+          if (!autorizado) {
+            return Response.json(
+              {
+                mensagem: "Não autorizado!"
+              },
+              {
+                status: 403
+              }
+            );
+          }
+
+        }
+
+
+        // Aqui ele vai para as rotas
         const response =
           await route.handler(
             request,
