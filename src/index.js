@@ -48,7 +48,7 @@ export default {
         const subPath = url.pathname.slice(route.prefix.length) || "/";
 
         // Se não estiver pedindo a rota autenticacao ou convidados, cobra o token!!!
-        if (route.prefix !== "/autenticacao" || route.prefix !== "/convidados") {
+        if (route.prefix !== "/autenticacao" && route.prefix !== "/convidados") {
 
           const authorization =
             request.headers.get("Authorization");
