@@ -29,7 +29,7 @@ export async function gerarTokenContrato(env, contratoId) {
 
     const tokenGerado = await jwt.sign(payload, env.JWT_PUBLIC);
 
-    return { body: { token: tokenGerado, mensagem: "Token criado!" }, status: 500 };
+    return { body: { token: tokenGerado, mensagem: "Token criado!" }, status: 200 };
 
 }
 
