@@ -11,10 +11,11 @@ export async function gerarToken(env, senha) {
     const payload = {
         "iat": agoraUTC,
         "exp": agoraUTC + 21600
-    }
+    };
 
-    return Response.json({ token: jwt.sign(payload, env.JWT_SECRET), mensagem: "Token entregue." }, { status: 200 });
+    const tokenGerado = await jwt.sign(payload, env.JWT_SECRET);
 
+    return Response.json({ token: tokenGerado, mensagem: "Token entregue." }, { status: 200 });
 }
 
 export async function validarToken(env, token) {
